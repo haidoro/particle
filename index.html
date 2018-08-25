@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sample</title>
+  <style>
+    body {
+      margin: 0;
+      height: 0;
+      overflow: hidden;
+    }
+    canvas {
+      display:block;
+      margin:auto;
+      background: blue;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="main_canvas"></canvas>
+
+  <script>   
+    const canvas = document.querySelector('canvas');
+    const context = canvas.getContext('2d');
+
+    canvas.width = 980;
+    canvas.height = 480;
+    draw();
+    function draw() { 
+        context.beginPath();
+        // 色を設定
+        context.fillStyle = 'red';
+        // 円を描く
+        context.arc(100, 100, 50, 0, (Math.PI/180)*360, false);
+        // 形状に沿って塗る
+        context.fill();
+        context.closePath();
+    }
+  </script>
+</body>
+</html>
