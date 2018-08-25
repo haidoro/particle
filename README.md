@@ -52,3 +52,29 @@ context.closePath();
 `fillStyle`で色を決めて、`fill()`で着色します。
 `beginPath()`で描画を始め、`closePath()`で終了します。
 
+### ブラウザの幅いっぱいにcanvasを広げ、リサイズ対応
+canvas幅と高さをいっぱいに広げます。これはCSSで「width: 100vw」「height: 100vh」にすることで対応します。
+
+また、リサイズに対応させるためには次のように「resize()」関数を作成しておきます。
+
+```
+function resize() {
+      stageW = innerWidth * devicePixelRatio;
+      stageH = innerHeight * devicePixelRatio;
+      canvas.width = stageW;
+      canvas.height = stageH;
+}
+```
+そのまま「resize()」関数を実行しても、リサイズするごとに再読み込みを実行しなければなりません。画面をリサイズすると自動でアップデートする仕組みは次のように「tick()」関数を作成して対応しています。後は、addEventListenerでresizeイベントを感知するとresize関数を実行します。
+
+```
+function tick() {
+  requestAnimationFrame(tick);
+  // 画面を更新する
+  draw();
+}
+```
+
+```
+window.addEventListener('resize', resize);
+```

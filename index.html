@@ -11,8 +11,8 @@
       overflow: hidden;
     }
     canvas {
-      display:block;
-      margin:auto;
+      width: 100vw;
+      height: 100vh;
       background: blue;
     }
   </style>
@@ -24,9 +24,21 @@
     const canvas = document.querySelector('canvas');
     const context = canvas.getContext('2d');
 
-    canvas.width = 980;
-    canvas.height = 480;
-    draw();
+    resize();
+    tick();
+    window.addEventListener('resize', resize);
+
+    function tick() {
+      requestAnimationFrame(tick);
+      // 画面を更新する
+      draw();
+    }
+    function resize() {
+      stageW = innerWidth * devicePixelRatio;
+      stageH = innerHeight * devicePixelRatio;
+      canvas.width = stageW;
+      canvas.height = stageH;
+    }
     function draw() { 
         context.beginPath();
         // 色を設定
