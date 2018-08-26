@@ -23,6 +23,7 @@
   <script>   
     const canvas = document.querySelector('canvas');
     const context = canvas.getContext('2d');
+    let MAX_LIFE = 80; // 寿命の最大値
 
     const particles = []; // 配列でパーティクルを管理
 
@@ -30,14 +31,14 @@
 
     // パーティクルを発生
     emit();
-   
+    setInterval(emit, 1500);
    
     tick();
     window.addEventListener('resize', resize);
 
     function tick() {
       requestAnimationFrame(tick);
-
+      update();
       draw();
     }
     function resize() {
@@ -53,20 +54,50 @@
       const particle = {
         x: stageW / 2, // パーティクルの発生場所(X)
         y: stageH * 4 / 5, // パーティクルの発生場所(Y)
+        vy: 0, // 速度
+        life: MAX_LIFE, // 寿命
       };
       // 配列に保存
       particles.push(particle);
     }
 
+     // パーティクルを更新します
+    function update() {
+      // パーティクルの計算を行う
+      for (let i = 0; i < particles.length; i++) {
+        // オブジェクトの作成
+        const particle = particles[i];
+        // 重力
+        particle.vy -= 1;
+        // 摩擦
+        particle.vy *= 0.92;
+        // 速度を位置に適用
+        particle.y += particle.vy;
+        // 寿命を減らす
+        particle.life -= 1;
+        // 寿命の判定
+        if (particle.life <= 0) {
+          // 配列からも削除
+          particles.splice(i, 1);
+          i -= 1;
+        }
+      }
+    }
+
+
     function draw() { 
+      context.clearRect(0, 0, stageW, stageH);
+      
+      particles.forEach(particle => {
         context.beginPath();
         // 色を設定
         context.fillStyle = 'red';
         // 円を描く
-        context.arc(particles[0].x, particles[0].y, 50, 0, (Math.PI/180)*360, false);
+        context.arc(particle.x, particle.y, 50, 0, (Math.PI/180)*360, false);
         // 形状に沿って塗る
         context.fill();
         context.closePath();
+      });
     }
   </script>
 </body>

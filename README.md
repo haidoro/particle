@@ -80,7 +80,7 @@ function tick() {
 window.addEventListener('resize', resize);
 ```
 
-## パーティクル発生の準備
+## パーティクル発生の準備（particle-objectブランチ）
 
 パーティクル発生に必要な条件を「particle」オブジェクトとして作成。ここでは発生させる場所の座標を決めています。  
 「particle」オブジェクトはさらに「particles」配列に入れて関数化しておきます。こうすることで定期的に関数を実行すると、パーティクル発生条件である「particle」オブジェクトを複数作成することができるようになります。
@@ -113,4 +113,56 @@ function draw() {
 ```
 これで画面中央の下部に円形が一つ出現します。
 
+## 複数の円形を発生
+`setInterval(emit, 1500)`を使うことで1.5秒ごとに`particle`オブジェクトを作り続けて`particles`に格納していきます。
 
+パーティクルの更新は次のようにします。  
+1. forループ文でparticles配列に格納されたparticleオブジェクトを取り出します。
+2. 重力は速度（vy）に1を減算し、摩擦は速度（vy）の0.92バイトし、それぞれ代入します。
+3. 速度は`particle.y += particle.vy`で実現できます。
+4. 寿命はMAX_LIFEの値を1ずつ減算して0になったら、splice()で`particles`配列から削除します。
+
+```
+    function update() {
+      // パーティクルの計算を行う
+      for (let i = 0; i < particles.length; i++) {
+        // オブジェクトの作成
+        const particle = particles[i];
+        // 重力
+        particle.vy -= 1;
+        // 摩擦
+        particle.vy *= 0.92;
+        // 速度を位置に適用
+        particle.y += particle.vy;
+        // 寿命を減らす
+        particle.life -= 1;
+        // 寿命の判定
+        if (particle.life <= 0) {
+          // 配列からも削除
+          particles.splice(i, 1);
+          i -= 1;
+        }
+      }
+    }
+```
+
+draw()関数も少し手を加えます。  
+forEach文で`particles`配列から`particle`を一つずつ抜き出して円形の描画を行います。
+この内容をアロー関数を使用して記述しています。
+
+```
+function draw() { 
+      context.clearRect(0, 0, stageW, stageH);
+      
+      particles.forEach(particle => {
+        context.beginPath();
+        // 色を設定
+        context.fillStyle = 'red';
+        // 円を描く
+        context.arc(particle.x, particle.y, 50, 0, (Math.PI/180)*360, false);
+        // 形状に沿って塗る
+        context.fill();
+        context.closePath();
+      });
+    }
+```
