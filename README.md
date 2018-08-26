@@ -1,6 +1,7 @@
 # パーティクル作成
+(パーティクル作成)[https://github.com/haidoro/particle]
 ## 円形の描画
-### canvasサイズの指定
+### canvasサイズの指定(GitHub drawブランチ)
 canvasのサイズを指定は少し面倒です。  
 canvasのサイズを変更する場合、CSSでwidthとheightを指定すると、canvasのデフォルトサイズからの相対サイズになってしまうため、canvas内に描画した画像が引き伸ばされることになります。  
 そのため、CSSで対応するにはcanvasタグにラッパー要素を作り、その要素に幅と高さを決めます。
@@ -78,3 +79,38 @@ function tick() {
 ```
 window.addEventListener('resize', resize);
 ```
+
+## パーティクル発生の準備
+
+パーティクル発生に必要な条件を「particle」オブジェクトとして作成。ここでは発生させる場所の座標を決めています。  
+「particle」オブジェクトはさらに「particles」配列に入れて関数化しておきます。こうすることで定期的に関数を実行すると、パーティクル発生条件である「particle」オブジェクトを複数作成することができるようになります。
+
+```
+function emit() {
+      // オブジェクトの作成
+      const particle = {
+        x: stageW / 2, // パーティクルの発生場所(X)
+        y: stageH * 4 / 5, // パーティクルの発生場所(Y)
+      };
+      // 配列に保存
+      particles.push(particle);
+    }
+```
+
+当然draw関数に記述した円形作成メソッドarcのパラメータも変更しておきます。
+
+```
+function draw() { 
+        context.beginPath();
+        // 色を設定
+        context.fillStyle = 'red';
+        // 円を描く
+        context.arc(particles[0].x, particles[0].y, 50, 0, (Math.PI/180)*360, false);
+        // 形状に沿って塗る
+        context.fill();
+        context.closePath();
+    }
+```
+これで画面中央の下部に円形が一つ出現します。
+
+

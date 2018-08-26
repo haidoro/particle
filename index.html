@@ -24,13 +24,20 @@
     const canvas = document.querySelector('canvas');
     const context = canvas.getContext('2d');
 
-    resize();
+    const particles = []; // 配列でパーティクルを管理
+
+     resize();
+
+    // パーティクルを発生
+    emit();
+   
+   
     tick();
     window.addEventListener('resize', resize);
 
     function tick() {
       requestAnimationFrame(tick);
-      // 画面を更新する
+
       draw();
     }
     function resize() {
@@ -39,12 +46,24 @@
       canvas.width = stageW;
       canvas.height = stageH;
     }
+
+    // パーティクルを発生させます
+    function emit() {
+      // オブジェクトの作成
+      const particle = {
+        x: stageW / 2, // パーティクルの発生場所(X)
+        y: stageH * 4 / 5, // パーティクルの発生場所(Y)
+      };
+      // 配列に保存
+      particles.push(particle);
+    }
+
     function draw() { 
         context.beginPath();
         // 色を設定
         context.fillStyle = 'red';
         // 円を描く
-        context.arc(100, 100, 50, 0, (Math.PI/180)*360, false);
+        context.arc(particles[0].x, particles[0].y, 50, 0, (Math.PI/180)*360, false);
         // 形状に沿って塗る
         context.fill();
         context.closePath();
